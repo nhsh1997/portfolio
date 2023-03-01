@@ -23,7 +23,7 @@ function Chair(props) {
     }, []);
 
     return (
-        <primitive onClick={toggleTimeline} ref={ref} scale={ 1.5 } object={ model.scene } />
+        <primitive onClick={toggleTimeline} rotation-y={ Math.PI } position={ [ -1, -2, -1 ] } ref={ref}  scale={ 1.5 } object={ model.scene } />
     )
 }
 
