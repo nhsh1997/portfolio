@@ -2,10 +2,11 @@ import {useLayoutEffect, useRef, useState} from 'react'
 import './App.css'
 import { Canvas } from '@react-three/fiber'
 import gsap from 'gsap'
-
-function Box(props) {
+import {OrbitControls, useGLTF} from '@react-three/drei'
+function Chair(props) {
     const ref = useRef(null)
     const tl = useRef();
+    const model = useGLTF('chair.glb')
 
     const toggleTimeline = () => {
         tl.current.reversed(!tl.current.reversed());
@@ -22,17 +23,16 @@ function Box(props) {
     }, []);
 
     return (
-        <mesh onClick={toggleTimeline} ref={ref} scale={ 1.5 }>
-            <sphereGeometry args={ [ 1.5, 32, 32 ] } />
-            <meshBasicMaterial color="mediumpurple" wireframe />
-        </mesh>
+        <primitive onClick={toggleTimeline} ref={ref} scale={ 1.5 } object={ model.scene } />
     )
 }
 
 function App() {
   return (
         <Canvas>
-            <Box />
+            <OrbitControls makeDefault />
+            <directionalLight castShadow position={ [ 1, 2, 3 ] } intensity={ 1.5 } />
+            <Chair />
         </Canvas>
   )
 }
