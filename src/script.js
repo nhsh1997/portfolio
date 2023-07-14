@@ -17,14 +17,6 @@ const canvas = document.querySelector('canvas.webgl')
  */
 const loadingBarElement = document.querySelector('.loading-bar')
 
-window.setTimeout(() =>
-{
-    // Animate overlay
-    gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 2, value: 0, delay: 1 })
-    loadingBarElement.classList.add('ended')
-    loadingBarElement.style.transform = ''
-}, 100)
-
 /**
  * Overlay
  */
@@ -169,7 +161,7 @@ window.addEventListener('resize', () =>
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.set(0, 0.4, 0.4)
+camera.position.set(0, 0.5, 1.2)
 scene.add(camera)
 
 /**
@@ -181,16 +173,41 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
+
+/*
+* Cursor
+* */
+
+const cursor = {}
+cursor.x = 0
+cursor.y = 0
+
+window.addEventListener('mousemove', (event) => {
+    cursor.x = event.clientX / sizes.width - 0.5
+    cursor.y = event.clientY / sizes.height - 0.5
+})
+
+
 /**
  * Animate
  */
 const clock = new THREE.Clock()
+let previousTime = 0
 
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
+    const deltaTime = elapsedTime - previousTime
+    previousTime = elapsedTime
+
 
     waterMaterial.uniforms.uTime.value = elapsedTime
+
+    const parallaxX = cursor.x * 0.5
+    const parallaxY = - cursor.y * 0.5
+
+    moon.position.x += (parallaxX - moon.position.x) * deltaTime * 5
+    moon.position.y += (parallaxY - moon.position.y) * deltaTime * 5
 
     // Render
     renderer.render(scene, camera)
@@ -198,5 +215,15 @@ const tick = () =>
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
 }
+
+window.setTimeout(() =>
+{
+    // Animate overlay
+    gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 2, value: 0, delay: 1 })
+    gsap.to(camera.position, { duration: 4, y: 0.4, delay: 1 });
+    gsap.to(camera.position, { duration: 4, z: 0.4, delay: 1 });
+    loadingBarElement.classList.add('ended')
+    loadingBarElement.style.transform = ''
+}, 100)
 
 tick()
