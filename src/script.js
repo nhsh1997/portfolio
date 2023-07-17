@@ -20,6 +20,63 @@ const loadingBarElement = document.querySelector('.loading-bar')
 /**
  * Overlay
  */
+let theme = {
+    background: new THREE.Color(0xFFFFFF),
+    moon: {
+        color: new THREE.Vector3(0.0, 0.0, 0.0)
+    },
+    cloud: {
+        color: {
+            black: new THREE.Vector3(0.0, 0.0, 0.0),
+            uv: new THREE.Vector3(1.0, 1.0, 1.0)
+        }
+    },
+    mountain: {
+        color: {
+            black: new THREE.Vector3(1.0, 1.0, 1.0),
+            uv: new THREE.Vector3(0.0, 0.0, 0.0)
+        }
+    }
+}
+
+let theme1 = {
+    background: new THREE.Color(0xffffff),
+    moon: {
+        color: new THREE.Vector3(1.0,0.247,0.204)
+    },
+    cloud: {
+        color: {
+            black: new THREE.Vector3(0.235,0.251,0.776),
+            uv: new THREE.Vector3(1.0,1.0,1.0)
+        }
+    },
+    mountain: {
+        color: {
+            black: new THREE.Vector3(1.0, 1.0, 1.0),
+            uv: new THREE.Vector3(0.341,0.373,0.812)
+        }
+    }
+}
+
+let theme2 = {
+    background: new THREE.Color(0xFFFFFF),
+    moon: {
+        color: new THREE.Vector3(0.0, 0.0, 0.0)
+    },
+    cloud: {
+        color: {
+            black: new THREE.Vector3(0.0, 0.0, 0.0),
+            uv: new THREE.Vector3(1.0, 1.0, 1.0)
+        }
+    },
+    mountain: {
+        color: {
+            black: new THREE.Vector3(1.0, 1.0, 1.0),
+            uv: new THREE.Vector3(0.0, 0.0, 0.0)
+        }
+    }
+}
+
 const overlayGeometry = new THREE.PlaneGeometry(2, 2, 1, 1)
 const overlayMaterial = new THREE.ShaderMaterial({
     // wireframe: true,
@@ -67,24 +124,24 @@ const waterMaterial = new THREE.ShaderMaterial({
             uSmallWavesFrequency: { value: 3 },
             uSmallWavesSpeed: { value: 0.2 },
             uSmallIterations: { value: 4 },
+            uBlackColor: { value: theme.cloud.color.black },
+            uUvColor:  { value: theme.cloud.color.uv }
         }
 })
 
 // Mesh
 const water = new THREE.Mesh(waterGeometry, waterMaterial)
 water.rotation.x = - Math.PI * 0.5
-const color2 = new THREE.Color( 0xFFFFFF );
-scene.background = color2;
+scene.background = theme.background
 scene.add(water)
 
 
 const moonGeometry = new THREE.SphereGeometry(1, 60, 60)
 const moonMaterial = new THREE.ShaderMaterial({
-    // wireframe: true,
     transparent: true,
     uniforms:
         {
-            uTime: { value: 0 }
+            uColor: { value: theme.moon.color }
         },
     vertexShader: `
         void main()
@@ -93,9 +150,10 @@ const moonMaterial = new THREE.ShaderMaterial({
         }
     `,
     fragmentShader: `
+        uniform vec3 uColor;
         void main()
         {
-            gl_FragColor = vec4(0.0, 0.0, 0.0, 0.8);
+            gl_FragColor = vec4(uColor, 0.8);
         }
     `
 })
@@ -126,6 +184,8 @@ const mMaterial = new THREE.ShaderMaterial({
             uSmallWavesFrequency: { value: 3 },
             uSmallWavesSpeed: { value: 0.2 },
             uSmallIterations: { value: 4 },
+            uBlackColor: { value: theme.mountain.color.black },
+            uUvColor:  { value: theme.mountain.color.uv }
         }
 })
 
@@ -133,6 +193,7 @@ const mountain = new THREE.Mesh(mGeometry, mMaterial)
 mountain.rotation.x = - Math.PI * 0.5
 
 scene.add(mountain)
+
 /**
  * Sizes
  */
@@ -227,3 +288,85 @@ window.setTimeout(() =>
 }, 100)
 
 tick()
+
+
+const switchButton = document.querySelector('.slider')
+
+let currentTheme = 0;
+let currentTimeLine;
+switchButton.addEventListener('click', () => {
+    if (currentTimeLine && currentTimeLine.progress() !== 1) {
+        currentTimeLine.kill()
+    }
+    //debounce here
+    if(currentTheme === 1) {
+        let tl1 = gsap.timeline();
+        tl1.to(moonMaterial.uniforms.uColor.value, {
+            duration: 0.5,
+            x: theme2.moon.color.x,
+            y: theme2.moon.color.y,
+            z: theme2.moon.color.z,
+        })
+        tl1.to(mMaterial.uniforms.uBlackColor.value, {
+            duration: 0.5,
+            x: theme2.mountain.color.black.x,
+            y: theme2.mountain.color.black.y,
+            z: theme2.mountain.color.black.z,
+        }, "<")
+        tl1.to(mMaterial.uniforms.uUvColor.value, {
+            duration: 0.5,
+            x: theme2.mountain.color.uv.x,
+            y: theme2.mountain.color.uv.y,
+            z: theme2.mountain.color.uv.z,
+        }, "<")
+        tl1.to(waterMaterial.uniforms.uBlackColor.value, {
+            duration: 0.5,
+            x: theme2.cloud.color.black.x,
+            y: theme2.cloud.color.black.y,
+            z: theme2.cloud.color.black.z,
+        }, "<")
+        tl1.to(waterMaterial.uniforms.uUvColor.value, {
+            duration: 0.5,
+            x: theme2.cloud.color.uv.x,
+            y: theme2.cloud.color.uv.y,
+            z: theme2.cloud.color.uv.z,
+        }, "<")
+        currentTimeLine = tl1;
+        currentTheme = 0;
+    } else {
+        let tl2= gsap.timeline();
+
+        tl2.to(moonMaterial.uniforms.uColor.value, {
+            duration: 2,
+            x: theme1.moon.color.x,
+            y: theme1.moon.color.y,
+            z: theme1.moon.color.z,
+        }, "<")
+        tl2.to(mMaterial.uniforms.uBlackColor.value, {
+            duration: 2,
+            x: theme1.mountain.color.black.x,
+            y: theme1.mountain.color.black.y,
+            z: theme1.mountain.color.black.z,
+        }, "<")
+        tl2.to(mMaterial.uniforms.uUvColor.value, {
+            duration: 2,
+            x: theme1.mountain.color.uv.x,
+            y: theme1.mountain.color.uv.y,
+            z: theme1.mountain.color.uv.z,
+        }, "<")
+        tl2.to(waterMaterial.uniforms.uBlackColor.value, {
+            duration: 2,
+            x: theme1.cloud.color.black.x,
+            y: theme1.cloud.color.black.y,
+            z: theme1.cloud.color.black.z,
+        }, "<")
+        tl2.to(waterMaterial.uniforms.uUvColor.value, {
+            duration: 2,
+            x: theme1.cloud.color.uv.x,
+            y: theme1.cloud.color.uv.y,
+            z: theme1.cloud.color.uv.z,
+        }, "<")
+        currentTimeLine = tl2;
+        currentTheme = 1;
+    }
+})
