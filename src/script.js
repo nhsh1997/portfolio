@@ -282,7 +282,6 @@ window.setTimeout(() =>
     // Animate overlay
     gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 2, value: 0, delay: 1 })
     gsap.to(camera.position, { duration: 4, y: 0.4, delay: 1 });
-    gsap.to(camera.position, { duration: 4, z: 0.4, delay: 1 });
     loadingBarElement.classList.add('ended')
     loadingBarElement.style.transform = ''
 }, 100)
