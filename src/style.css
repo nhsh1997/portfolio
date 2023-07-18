@@ -85,7 +85,6 @@ body
 /* The slider */
 .slider {
     position: absolute;
-    cursor: pointer;
     top: 0;
     left: 0;
     right: 0;
@@ -97,6 +96,7 @@ body
 
 .slider:before {
     position: absolute;
+    cursor: pointer;
     content: "";
     height: 18px;
     width: 18px;
