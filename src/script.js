@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { gsap } from 'gsap'
 import waterVertexShader from './shaders/water/vertex.glsl'
 import waterFragmentShader from './shaders/water/fragment.glsl'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 import mountainVertexShader from './shaders/mountain/vertex.glsl'
 import mountainFragmentShader from './shaders/mountain/fragment.glsl'
@@ -106,7 +107,7 @@ scene.add(overlay)
  * Water
  */
 // Geometry
-const waterGeometry = new THREE.PlaneGeometry(10, 20, 512, 512)
+const waterGeometry = new THREE.PlaneGeometry(15, 15, 512, 512)
 
 // Material
 const waterMaterial = new THREE.ShaderMaterial({
@@ -132,6 +133,7 @@ const waterMaterial = new THREE.ShaderMaterial({
 // Mesh
 const water = new THREE.Mesh(waterGeometry, waterMaterial)
 water.rotation.x = - Math.PI * 0.5
+water.position.z = -1
 scene.background = theme.background
 scene.add(water)
 
@@ -194,6 +196,100 @@ mountain.rotation.x = - Math.PI * 0.5
 
 scene.add(mountain)
 
+
+/**
+ * Rain
+ */
+
+const rainGeometry = new THREE.BufferGeometry()
+
+const positions = new Float32Array(200 * 3)
+const colors = new Float32Array(200 * 3)
+
+for (let i = 0; i < 200; i++)
+{
+    const i3 =  i * 3
+
+    const randomX = (Math.random() - 0.5) * 20
+    const randomY = (Math.random() - 0.5) * 10
+    const randomZ = (Math.random() - 0.5) * 10
+
+    positions[i3] = randomX
+    positions[i3 + 1] = randomY
+    positions[i3 + 2] = randomZ
+
+
+    colors[i3] = Math.random()
+    colors[i3 + 1] = Math.random()
+    colors[i3 + 2] = 0.0
+}
+
+rainGeometry.setAttribute(
+    'position',
+    new THREE.BufferAttribute(positions, 3)
+)
+
+rainGeometry.setAttribute(
+    'color',
+    new THREE.BufferAttribute(colors, 3)
+)
+
+const rainMaterial = new THREE.ShaderMaterial({
+    depthWrite: false,
+    blending: THREE.SubtractiveBlending,
+    vertexColors: true,
+    uniforms:
+        {
+            uTime: {value: 0},
+        },
+    vertexShader: `
+        uniform float uTime;
+        varying vec3 vColor;
+
+        void main()
+        {
+            /**
+             * Position
+             */
+            vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+            modelPosition.y += tan(uTime * 0.1);
+            modelPosition.x += sin(uTime * 0.2);
+
+            vec4 viewPosition = viewMatrix * modelPosition;
+            vec4 projectedPosition = projectionMatrix * viewPosition;
+            gl_Position = projectedPosition;
+
+            /**
+             * Size
+             */
+            gl_PointSize = modelPosition.y * 10.0;
+            vColor = color;
+        }
+    `,
+    fragmentShader: `
+            uniform float uTime;
+            varying vec3 vColor;
+
+            void main()
+            {
+                
+                float strength = distance(gl_PointCoord, vec2(0.5));
+                strength = step(0.5, strength);
+                strength = 1.0 - strength;
+                vec3 mixedColor = mix(vec3(0.0), vec3(cos(uTime) * vColor.x, sin(uTime  * 0.2) * vColor.y, vColor.z), vec3(strength));
+                gl_FragColor = vec4(mixedColor, 1.0);
+            }
+        `
+})
+
+const rain = new THREE.Points(rainGeometry, rainMaterial)
+scene.add(rain)
+
+rain.position.y = 1
+rain.position.z = -2
+
+
+
 /**
  * Sizes
  */
@@ -224,6 +320,7 @@ window.addEventListener('resize', () =>
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
 camera.position.set(0, 0.5, 1.2)
 scene.add(camera)
+
 
 /**
  * Renderer
@@ -263,6 +360,7 @@ const tick = () =>
 
 
     waterMaterial.uniforms.uTime.value = elapsedTime
+    rainMaterial.uniforms.uTime.value = elapsedTime
 
     const parallaxX = cursor.x * 0.5
     const parallaxY = - cursor.y * 0.5
