@@ -17,6 +17,6 @@ void main()
 /**
              * Size
              */
-    gl_PointSize = modelPosition.y * 10.0;
+    gl_PointSize = 10.0;
     vColor = color;
 }

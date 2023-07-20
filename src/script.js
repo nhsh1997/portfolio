@@ -195,10 +195,10 @@ scene.add(mountain)
 
 const rainGeometry = new THREE.BufferGeometry()
 
-const positions = new Float32Array(200 * 3)
-const colors = new Float32Array(200 * 3)
+const positions = new Float32Array(400 * 3)
+const colors = new Float32Array(400 * 3)
 
-for (let i = 0; i < 200; i++)
+for (let i = 0; i < 400; i++)
 {
     const i3 =  i * 3
 
@@ -334,6 +334,7 @@ window.setTimeout(() =>
     // Animate overlay
     gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 2, value: 0, delay: 1 })
     gsap.to(camera.position, { duration: 4, y: 0.4, delay: 1 });
+    gsap.to(camera.position, { duration: 4, z: 0.4, delay: 1 });
     loadingBarElement.classList.add('ended')
     loadingBarElement.style.transform = ''
 }, 100)
