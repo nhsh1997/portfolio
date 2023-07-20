@@ -3,9 +3,12 @@ import { gsap } from 'gsap'
 import waterVertexShader from './shaders/water/vertex.glsl'
 import waterFragmentShader from './shaders/water/fragment.glsl'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-
 import mountainVertexShader from './shaders/mountain/vertex.glsl'
 import mountainFragmentShader from './shaders/mountain/fragment.glsl'
+import rainVertexShader from './shaders/rain/vertex.glsl'
+import rainFragmentShader from './shaders/rain/fragment.glsl'
+import moonVertexShader from './shaders/moon/vertex.glsl'
+import moonFragmentShader from './shaders/moon/fragment.glsl'
 THREE.ColorManagement.enabled = false
 
 // Scene
@@ -145,19 +148,8 @@ const moonMaterial = new THREE.ShaderMaterial({
         {
             uColor: { value: theme.moon.color }
         },
-    vertexShader: `
-        void main()
-        {  
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-    `,
-    fragmentShader: `
-        uniform vec3 uColor;
-        void main()
-        {
-            gl_FragColor = vec4(uColor, 0.8);
-        }
-    `
+    vertexShader: moonVertexShader,
+    fragmentShader: moonFragmentShader
 })
 
 const moon = new THREE.Mesh(moonGeometry, moonMaterial)
@@ -242,53 +234,15 @@ const rainMaterial = new THREE.ShaderMaterial({
         {
             uTime: {value: 0},
         },
-    vertexShader: `
-        uniform float uTime;
-        varying vec3 vColor;
-
-        void main()
-        {
-            /**
-             * Position
-             */
-            vec4 modelPosition = modelMatrix * vec4(position, 1.0);
-            modelPosition.y += tan(uTime * 0.1);
-            modelPosition.x += sin(uTime * 0.2);
-
-            vec4 viewPosition = viewMatrix * modelPosition;
-            vec4 projectedPosition = projectionMatrix * viewPosition;
-            gl_Position = projectedPosition;
-
-            /**
-             * Size
-             */
-            gl_PointSize = modelPosition.y * 10.0;
-            vColor = color;
-        }
-    `,
-    fragmentShader: `
-            uniform float uTime;
-            varying vec3 vColor;
-
-            void main()
-            {
-                
-                float strength = distance(gl_PointCoord, vec2(0.5));
-                strength = step(0.5, strength);
-                strength = 1.0 - strength;
-                vec3 mixedColor = mix(vec3(0.0), vec3(cos(uTime) * vColor.x, sin(uTime  * 0.2) * vColor.y, vColor.z), vec3(strength));
-                gl_FragColor = vec4(mixedColor, 1.0);
-            }
-        `
+    vertexShader: rainVertexShader,
+    fragmentShader: rainFragmentShader
 })
 
 const rain = new THREE.Points(rainGeometry, rainMaterial)
 scene.add(rain)
 
 rain.position.y = 1
-rain.position.z = -2
-
-
+rain.position.z = -5
 
 /**
  * Sizes
