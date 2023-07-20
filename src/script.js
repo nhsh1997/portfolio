@@ -195,10 +195,10 @@ scene.add(mountain)
 
 const rainGeometry = new THREE.BufferGeometry()
 
-const positions = new Float32Array(400 * 3)
-const colors = new Float32Array(400 * 3)
+const positions = new Float32Array(1000 * 3)
+const colors = new Float32Array(1000 * 3)
 
-for (let i = 0; i < 400; i++)
+for (let i = 0; i < 1000; i++)
 {
     const i3 =  i * 3
 
