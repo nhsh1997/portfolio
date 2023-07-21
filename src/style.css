@@ -4,30 +4,12 @@
     padding: 0;
 }
 
-html,
-body
-{
-    overflow: hidden;
-}
-
 .webgl
 {
     position: fixed;
     top: 0;
     left: 0;
     outline: none;
-}
-
-*
-{
-    margin: 0;
-    padding: 0;
-}
-
-html,
-body
-{
-    overflow: hidden;
 }
 
 .webgl
@@ -61,13 +43,9 @@ body
     left: 5%;
 }
 
-.label {
-    font-size: 21px;
-}
-
 /* The switch - the box around the slider */
 .switch {
-    position: absolute;
+    position: fixed;
     top: 2%;
     right: 2%;
     display: inline-block;
@@ -134,8 +112,27 @@ input:checked + .slider:before {
 }
 
 .nav {
-    position: absolute;
+    position: fixed;
     color: white;
     right: 2%;
     bottom: 2%;
+}
+
+.section
+{
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    position: relative;
+    font-family: 'Cabin', sans-serif;
+    color: #ff6b6b;
+    text-transform: uppercase;
+    font-size: 7vmin;
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+section:nth-child(odd)
+{
+    justify-content: flex-end;
 }
