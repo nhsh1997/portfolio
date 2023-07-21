@@ -286,21 +286,31 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 let scrollY = window.scrollY
 let currentSection = 0
 
+let currentScrollTL;
 window.addEventListener('scroll', () => {
     scrollY = window.scrollY
     const newSection = Math.round(scrollY / sizes.height)
 
     if (newSection !== currentSection) {
+        if (currentScrollTL && currentScrollTL.progress() !== 1) {
+            currentScrollTL.kill()
+        }
         if (currentSection === 0) {
-            gsap.to(camera.rotation,{
+            let tl = gsap.timeline();
+            tl.to(camera.rotation,{
                 duration: 2,
+                ease: "slow(0.7, 0.7, false)",
                 x: '+=1',
             })
+            currentScrollTL = tl;
         } else {
-            gsap.to(camera.rotation,{
+            let tl = gsap.timeline();
+            tl.to(camera.rotation,{
                 duration: 2,
+                ease: "slow(0.7, 0.7, false)",
                 x: '-=1',
             })
+            currentScrollTL = tl;
         }
         currentSection = newSection
 
