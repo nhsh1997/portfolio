@@ -132,3 +132,10 @@ input:checked + .slider:before {
     border-radius: 50%;
     box-shadow: 0 0 2px black;
 }
+
+.nav {
+    position: absolute;
+    color: white;
+    right: 2%;
+    bottom: 2%;
+}

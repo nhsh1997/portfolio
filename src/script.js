@@ -5,8 +5,6 @@ import waterFragmentShader from './shaders/water/fragment.glsl'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import mountainVertexShader from './shaders/mountain/vertex.glsl'
 import mountainFragmentShader from './shaders/mountain/fragment.glsl'
-import rainVertexShader from './shaders/rain/vertex.glsl'
-import rainFragmentShader from './shaders/rain/fragment.glsl'
 import moonVertexShader from './shaders/moon/vertex.glsl'
 import moonFragmentShader from './shaders/moon/fragment.glsl'
 THREE.ColorManagement.enabled = false
@@ -188,62 +186,6 @@ mountain.rotation.x = - Math.PI * 0.5
 
 scene.add(mountain)
 
-
-/**
- * Rain
- */
-
-const rainGeometry = new THREE.BufferGeometry()
-
-const positions = new Float32Array(1000 * 3)
-const colors = new Float32Array(1000 * 3)
-
-for (let i = 0; i < 1000; i++)
-{
-    const i3 =  i * 3
-
-    const randomX = (Math.random() - 0.5) * 20
-    const randomY = (Math.random() - 0.5) * 10
-    const randomZ = (Math.random() - 0.5) * 10
-
-    positions[i3] = randomX
-    positions[i3 + 1] = randomY
-    positions[i3 + 2] = randomZ
-
-
-    colors[i3] = Math.random()
-    colors[i3 + 1] = Math.random()
-    colors[i3 + 2] = 0.0
-}
-
-rainGeometry.setAttribute(
-    'position',
-    new THREE.BufferAttribute(positions, 3)
-)
-
-rainGeometry.setAttribute(
-    'color',
-    new THREE.BufferAttribute(colors, 3)
-)
-
-const rainMaterial = new THREE.ShaderMaterial({
-    depthWrite: false,
-    blending: THREE.SubtractiveBlending,
-    vertexColors: true,
-    uniforms:
-        {
-            uTime: {value: 0},
-        },
-    vertexShader: rainVertexShader,
-    fragmentShader: rainFragmentShader
-})
-
-const rain = new THREE.Points(rainGeometry, rainMaterial)
-scene.add(rain)
-
-rain.position.y = 1
-rain.position.z = -5
-
 /**
  * Sizes
  */
@@ -314,7 +256,6 @@ const tick = () =>
 
 
     waterMaterial.uniforms.uTime.value = elapsedTime
-    rainMaterial.uniforms.uTime.value = elapsedTime
 
     const parallaxX = cursor.x * 0.5
     const parallaxY = - cursor.y * 0.5
