@@ -462,3 +462,20 @@ switchButton.addEventListener('click', () => {
         currentTheme = 1;
     }
 })
+
+const logoButton = document.querySelector('.logo')
+
+
+logoButton.addEventListener('click', () => {
+    if (currentSection === 1) {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    } else {
+        window.scrollTo({
+            top: sizes.height,
+            behavior: 'smooth'
+        });
+    }
+})
