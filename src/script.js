@@ -284,8 +284,9 @@ renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 let scrollY = window.scrollY
-let currentSection = 0
+let currentSection = Math.round(scrollY / sizes.height);
 
+const aboutEl = document.querySelector(".about")
 let currentScrollTL;
 window.addEventListener('scroll', () => {
     scrollY = window.scrollY
@@ -303,6 +304,7 @@ window.addEventListener('scroll', () => {
                 x: '+=1',
             })
             currentScrollTL = tl;
+            tl.to(".about", { opacity: 1, duration: 0.5 });
         } else {
             let tl = gsap.timeline();
             tl.to(camera.rotation,{
@@ -310,7 +312,7 @@ window.addEventListener('scroll', () => {
                 ease: "slow(0.7, 0.7, false)",
                 x: '-=1',
             })
-            currentScrollTL = tl;
+            tl.to(".about", { opacity: 0, duration: 0.5 });
         }
         currentSection = newSection
 
@@ -366,6 +368,11 @@ window.setTimeout(() =>
     gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 2, value: 0, delay: 1 })
     gsap.to(camera.position, { duration: 4, y: 0.4, delay: 1 });
     gsap.to(camera.position, { duration: 4, z: 0.4, delay: 1 });
+    if (currentSection === 1) {
+        camera.rotation.x = 1;
+    } else {
+        camera.rotation.x = 0;
+    }
     loadingBarElement.classList.add('ended')
     loadingBarElement.style.transform = ''
 }, 100)

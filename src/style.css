@@ -3,15 +3,6 @@
     margin: 0;
     padding: 0;
 }
-
-.webgl
-{
-    position: fixed;
-    top: 0;
-    left: 0;
-    outline: none;
-}
-
 .webgl
 {
     position: fixed;
@@ -118,6 +109,10 @@ input:checked + .slider:before {
     bottom: 2%;
 }
 
+a {
+    cursor: pointer;
+}
+
 .section
 {
     display: flex;
@@ -127,10 +122,25 @@ input:checked + .slider:before {
     font-family: 'Cabin', sans-serif;
     color: #ff6b6b;
     text-transform: uppercase;
-    font-size: 7vmin;
     padding-left: 10%;
     padding-right: 10%;
 }
+
+.about {
+    opacity: 0;
+    padding: 2%;
+}
+
+
+h1 {
+    font-size: 8vmin;
+}
+
+h2 {
+    font-size: 5vmin;
+    color: black;
+}
+
 
 section:nth-child(odd)
 {
