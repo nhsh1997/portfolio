@@ -131,6 +131,9 @@ a {
     right: 2%;
     bottom: 2%;
 }
+.logo:hover {
+    opacity: 0.8;
+}
 
 h1 {
     font-size: 8vmin;
