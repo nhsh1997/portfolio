@@ -370,8 +370,10 @@ window.setTimeout(() =>
     gsap.to(camera.position, { duration: 4, z: 0.4, delay: 1 });
     if (currentSection === 1) {
         camera.rotation.x = 1;
+        gsap.to(".about", { opacity: 1, duration: 0.5 });
     } else {
         camera.rotation.x = 0;
+        gsap.to(".about", { opacity: 0, duration: 0.5 });
     }
     loadingBarElement.classList.add('ended')
     loadingBarElement.style.transform = ''
