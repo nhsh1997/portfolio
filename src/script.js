@@ -146,6 +146,7 @@ const moonMaterial = new THREE.ShaderMaterial({
     transparent: true,
     uniforms:
         {
+            uTime: { value: 0 },
             uColor: { value: theme.moon.color }
         },
     vertexShader: moonVertexShader,
@@ -348,6 +349,7 @@ const tick = () =>
 
     waterMaterial.uniforms.uTime.value = elapsedTime
     rainMaterial.uniforms.uTime.value = elapsedTime
+    moonMaterial.uniforms.uTime.value = elapsedTime
 
     const parallaxX = cursor.x * 0.5
     const parallaxY = - cursor.y * 0.5
